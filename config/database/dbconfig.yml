@@ -1,0 +1,5 @@
+development:
+  dialect: mysql
+  datasource: ${DATASOURCE_ENDPOINT}?parseTime=true
+  dir: config/database/migrations
+  table: migrations

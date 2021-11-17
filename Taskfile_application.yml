@@ -1,0 +1,77 @@
+version: "3"
+
+env:
+  DATASOURCE_HOST: '{{.DATASOURCE_HOST | default "127.0.0.1"}}'
+  DATASOURCE_PORT: '{{.DATASOURCE_PORT | default "3306"}}'
+  DATASOURCE_ENDPOINT: "{{.DATASOURCE_USER}}:{{.DATASOURCE_PASSWORD}}@tcp({{.DATASOURCE_HOST}})/{{.DATASOURCE_DATABASE}}"
+
+vars:
+  MIGRATE_DATABASE_CONFIG: "config/database/dbconfig.yml"
+
+tasks:
+  run:
+    cmds:
+      - go run scripts/watch.go
+    sources:
+      - cmd/main.go
+    method: timestamp
+
+  setup:
+    cmds:
+      - task: goinstall
+      - task: database:init
+
+  goinstall:
+    cmds:
+      - go install github.com/rubenv/sql-migrate/sql-migrate@latest
+
+  database:init:
+    desc: Initalize database
+    cmds:
+      - |
+        read -p "Do you want to initialize database? (yes/[no])" ANSWER; \
+        if [[ "$ANSWER" != 'yes' ]]; then exit 1; fi
+      - task: database:drop
+      - task: migrate:up
+      - |
+        mysql \
+        --user "$DATASOURCE_USER" \
+        --host "$DATASOURCE_HOST" \
+        --port "$DATASOURCE_PORT" \
+        -p"$DATASOURCE_PASSWORD" \
+        --database "$DATASOURCE_DATABASE" \
+        -e 'source {{.DATA_SOURCE | default "config/database/data/data.sql"}}'
+
+  database:drop:
+    cmds:
+      - |
+        mysql \
+        --user "$DATASOURCE_USER" \
+        --host "$DATASOURCE_HOST" \
+        --port "$DATASOURCE_PORT" \
+        -p"$DATASOURCE_PASSWORD" \
+        --database "$DATASOURCE_DATABASE" \
+        -e "DROP DATABASE $DATASOURCE_DATABASE; CREATE DATABASE $DATASOURCE_DATABASE;"
+      - sleep 1
+
+  migrate:new:
+    desc: Create a new migration file
+    cmds:
+      - sql-migrate new -config={{.MIGRATE_DATABASE_CONFIG}} {{.name}}
+    preconditions:
+      - sh: "[[ -n {{.name}} ]]"
+        msg: "`name` parameter is not defined."
+      - sh: "[[ {{.name}} =~ ^(create|alter|drop)_.+ ]]"
+        msg: "Format is different."
+
+  migrate:up:
+    desc: Migrates the database
+    cmds:
+      - sql-migrate up -config={{.MIGRATE_DATABASE_CONFIG}} --dryrun
+      - sql-migrate up -config={{.MIGRATE_DATABASE_CONFIG}}
+
+  migrate:down:
+    desc: Revert the latest migration
+    cmds:
+      - sql-migrate down -config={{.MIGRATE_DATABASE_CONFIG}} --dryrun
+      - sql-migrate down -config={{.MIGRATE_DATABASE_CONFIG}}

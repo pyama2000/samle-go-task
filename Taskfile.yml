@@ -1,0 +1,60 @@
+version: "3"
+
+includes:
+  application: ./Taskfile_application.yml
+
+vars:
+  GLOBAL_VAR: globally variable
+
+env:
+  ENV_VAR: globally environment variable
+
+dotenv: [".env"]
+
+tasks:
+  default:
+    cmds:
+      - echo "Hello, go-task!"
+
+  echo:var:
+    cmds:
+      - echo {{.GLOBAL_VAR}}
+
+  echo:env:how-print:
+    cmds:
+      - echo "$ENV_VAR"
+      - echo {{.ENV_VAR}}
+
+  echo:env:order:
+    env:
+      ENV_VAR: task environment variable
+    cmds:
+      - echo "$ENV_VAR"
+
+  run:
+    desc: Build and run package
+    cmds:
+      - go build cmd/greet/main.go
+      - ./main
+    sources:
+      - cmd/greet/main.go
+    generates:
+      - ./main
+    method: timestamp
+
+  deps:
+    deps: ["dep-task1", "dep-task2", "dep-task3"]
+    cmds:
+      - echo task
+
+  dep-task1:
+    cmds:
+      - echo dependency task 1
+
+  dep-task2:
+    cmds:
+      - echo dependency task 2
+
+  dep-task3:
+    cmds:
+      - echo dependency task 3
