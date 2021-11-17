@@ -25,8 +25,8 @@ tasks:
     cmds:
       - go install github.com/rubenv/sql-migrate/sql-migrate@latest
 
-  database:init:
-    desc: Initalize database
+  database:seed:
+    desc: Seeding a database
     cmds:
       - |
         read -p "Do you want to initialize database? (yes/[no])" ANSWER; \
