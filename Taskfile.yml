@@ -21,11 +21,13 @@ tasks:
       - echo {{.GLOBAL_VAR}}
 
   echo:env:how-print:
+    desc: Print environment variables
     cmds:
       - echo "$ENV_VAR"
       - echo {{.ENV_VAR}}
 
   echo:env:order:
+    desc: The variable priority order
     env:
       ENV_VAR: task environment variable
     cmds:
