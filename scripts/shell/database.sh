@@ -41,15 +41,15 @@ function database_seed () {
     return 1
   fi
 
-  RESULT=$(mysql \
+  mysql \
     --user "$DATASOURCE_USER" \
     --host "$DATASOURCE_HOST" \
     --port "$DATASOURCE_PORT" \
     -p"$DATASOURCE_PASSWORD" \
     --database "$DATASOURCE_DATABASE" \
-    -e "source ${DATA_SOURCE:-config/database/data/data.sql}")
+    -e "source ${DATA_SOURCE:-config/database/data/data.sql}"
 
-  if [ "$RESULT" != 0 ]; then
+  if [ "$?" != 0 ]; then
     echo 'Failed to seed database'
     return 1
   fi
