@@ -33,6 +33,11 @@ tasks:
     cmds:
       - echo "$ENV_VAR"
 
+  echo:env:external:
+    desc: Run echo-taskfile-env script
+    cmds:
+      - ./scripts/echo-taskfile-env.sh
+
   run:
     desc: Build and run package
     cmds:
