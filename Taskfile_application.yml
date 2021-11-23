@@ -1,12 +1,12 @@
 version: "3"
 
+vars:
+  MIGRATE_DATABASE_CONFIG: "config/database/dbconfig.yml"
+
 env:
   DATASOURCE_HOST: '{{.DATASOURCE_HOST | default "127.0.0.1"}}'
   DATASOURCE_PORT: '{{.DATASOURCE_PORT | default "3306"}}'
   DATASOURCE_ENDPOINT: "{{.DATASOURCE_USER}}:{{.DATASOURCE_PASSWORD}}@tcp({{.DATASOURCE_HOST}}:{{.DATASOURCE_PORT}})/{{.DATASOURCE_DATABASE}}"
-
-vars:
-  MIGRATE_DATABASE_CONFIG: "config/database/dbconfig.yml"
 
 tasks:
   run:
