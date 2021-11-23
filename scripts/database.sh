@@ -6,7 +6,7 @@ export DATASOURCE_ENDPOINT="$DATASOURCE_USER:$DATASOURCE_PASSWORD@tcp($DATASOURC
 
 MIGRATE_DATABASE_CONFIG='config/database/dbconfig.yml'
 
-function database_drop () {
+function database_drop() {
   mysql \
     --user "$DATASOURCE_USER" \
     --host "$DATASOURCE_HOST" \
@@ -18,12 +18,12 @@ function database_drop () {
   sleep 1
 }
 
-function migrate_up () {
+function migrate_up() {
   sql-migrate up -config="$MIGRATE_DATABASE_CONFIG" --dryrun
   sql-migrate up -config="$MIGRATE_DATABASE_CONFIG"
 }
 
-function database_seed () {
+function database_seed() {
   echo "Do you want to initialize database? (yes/[no])"
   read -r ANSWER
 
@@ -54,7 +54,6 @@ function database_seed () {
     return 1
   fi
 }
-
 
 if [ "$1" == "" ]; then
   echo 'subcommand must be set'
