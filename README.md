@@ -15,13 +15,3 @@ sample go-task
 | DATASOURCE\_USER     | e.g. sample-go-task   |
 | DATASOURCE\_PASSWORD | e.g. sample-go-task   |
 | DATASOURCE\_DATABASE | e.g. sample\_go\_task |
-
-## Usage
-
-### 1. Print variables
-
-### 2. Call another task
-
-### 3. Database seeding
-
-### 4. Watch the file and run the task again
