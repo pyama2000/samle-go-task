@@ -25,6 +25,10 @@ tasks:
     cmds:
       - go install github.com/rubenv/sql-migrate/sql-migrate@latest
 
+  database:setup:
+    cmds:
+      - docker compose up -d
+
   database:seed:
     desc: Seeding a database
     cmds:
